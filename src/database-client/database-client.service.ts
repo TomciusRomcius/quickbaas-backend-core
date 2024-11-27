@@ -15,6 +15,7 @@ export class DatabaseClientService {
     }
   }
 
+  // TODO: Fix get with arrays
   public async get(getDto: DeleteDto) {
     return await this.DataModel.findOne({}, {
       [getDto.path]: 1,
