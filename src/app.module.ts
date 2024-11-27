@@ -7,17 +7,21 @@ import { JwtService } from './jwt/jwt.service';
 import { JwtModule } from './jwt/jwt.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { CollectionsModule } from './collections/collections.module';
+import { DatabaseClientModule } from './database-client/database-client.module';
+import { DatabaseModule } from './database/database.module';
+
 @Module({
   imports: [
-    UserModule,
-    JwtModule,
     ConfigModule.forRoot({
       envFilePath: '.env.development.local',
       isGlobal: true,
     }),
+    DatabaseModule,
+    JwtModule,
+    UserModule,
     AuthModule,
-    CollectionsModule,
+    DatabaseClientModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService, JwtService],
