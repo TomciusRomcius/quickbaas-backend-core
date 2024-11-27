@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { DatabaseClientService } from './database-client.service';
 import { SetDto } from './dtos/setDto';
 import { DeleteDto } from './dtos/deleteDto';
@@ -6,6 +6,11 @@ import { DeleteDto } from './dtos/deleteDto';
 @Controller('database-client')
 export class DatabaseClientController {
   constructor(private readonly databaseClientService: DatabaseClientService) {}
+
+  @Get('get')
+  public async get(@Body() getDto: DeleteDto) {
+    return await this.databaseClientService.get(getDto);
+  }
 
   @Post('set')
   public async set(@Body() setDto: SetDto) {

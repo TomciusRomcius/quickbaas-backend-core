@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { SetDto } from './dtos/setDto';
-import { generatePushQuery } from './utils';
 import { DeleteDto } from './dtos/deleteDto';
 
 @Injectable()
@@ -16,6 +15,12 @@ export class DatabaseClientService {
     }
   }
 
+  public async get(getDto: DeleteDto) {
+    return await this.DataModel.findOne({}, {
+      [getDto.path]: 1,
+    });
+  }
+
   public async set(setDto: SetDto) {
     let data = await this.DataModel.findOne();
     if (!data) {
@@ -27,7 +32,6 @@ export class DatabaseClientService {
   }
 
   public async push(setDto: SetDto) {
-    const pushQuery = generatePushQuery(setDto.path, setDto.value);
     let data = await this.DataModel.findOneAndUpdate(
       {},
       { $push: { [setDto.path]: setDto.value } },
