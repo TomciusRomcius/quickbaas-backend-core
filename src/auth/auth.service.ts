@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthWithPasswordDto } from './dto/authWithPasswordDto';
 import { JwtService } from 'src/jwt/jwt.service';
 import User from 'src/common/models/userModel';
@@ -10,7 +14,9 @@ export class AuthService {
   async signInWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const user = await User.findOne({ email: authWithPasswordDto.email });
     if (!user) {
-      throw new Error('User with the specified email does not exist!');
+      throw new NotFoundException(
+        'User with the specified email does not exist!',
+      );
     }
 
     // TODO: add expiry date
@@ -19,7 +25,7 @@ export class AuthService {
         email: user.email,
       });
     } else {
-      throw new Error('Password is incorrect!');
+      throw new UnauthorizedException('Password is incorrect!');
     }
   }
 
