@@ -15,7 +15,12 @@ export class ServerFunctionsService {
   async onModuleInit() {
     const fns = await ServerFunctionModel.find();
     fns.forEach((fn) => {
-      this.serverFunctions.set(fn.name, new ServerFunction(fn.name, fn.code));
+      this.serverFunctions.set(
+        fn.name,
+        new ServerFunction(fn.name, fn.code, {
+          databaseClientService: this.databaseClientService,
+        }),
+      );
     });
   }
 
@@ -35,6 +40,9 @@ export class ServerFunctionsService {
     const fn = new ServerFunction(
       createServerFunctionDto.name,
       createServerFunctionDto.code,
+      {
+        databaseClientService: this.databaseClientService,
+      },
     );
 
     const dbFn = await new ServerFunctionModel({
