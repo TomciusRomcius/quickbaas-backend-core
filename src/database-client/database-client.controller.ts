@@ -7,7 +7,7 @@ import { DeleteDto } from './dtos/deleteDto';
 export class DatabaseClientController {
   constructor(private readonly databaseClientService: DatabaseClientService) {}
 
-  @Get('get')
+  @Post('get')
   public async get(@Body() getDto: DeleteDto) {
     return await this.databaseClientService.get(getDto);
   }
