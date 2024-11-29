@@ -1,9 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseClientService } from 'src/database-client/database-client.service';
 import { CreateServerFunctionDto } from './dtos/createServerFunctionDto';
 import ServerFunction from './features/server-function';
 import ServerFunctionModel from 'src/common/models/serverFunctionModel';
-import { RunServerFunctionDto } from './dtos/runServerFunctionDto';
 import { DeleteServerFunctionDto } from './dtos/deleteServerFunctionDto';
 
 @Injectable()
@@ -54,16 +53,18 @@ export class ServerFunctionsService {
     this.serverFunctions.set(fn.name, fn);
   }
 
-  public runServerFunction(runServerFunctionDto: RunServerFunctionDto) {
-    const fn = this.serverFunctions.get(runServerFunctionDto.name);
+  public async runServerFunction(req: Request, res: Response) {
+    if (!req.body['name'] || typeof req.body['name'] !== 'string') {
+      throw new BadRequestException('You must provide the server function name');
+    }
+    const fn = this.serverFunctions.get(req.body['name']);
     if (!fn) {
       throw new NotFoundException(
         'Server function with the specified name does not exist',
       );
     }
 
-    const result = fn.run();
-    return result;
+    const result = fn.run(req, res);
   }
 
   public deleteServerFunction(

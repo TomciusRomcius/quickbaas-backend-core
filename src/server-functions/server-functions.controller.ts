@@ -1,7 +1,6 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ServerFunctionsService } from './server-functions.service';
 import { CreateServerFunctionDto } from './dtos/createServerFunctionDto';
-import { RunServerFunctionDto } from './dtos/runServerFunctionDto';
 import { AdminGuard } from 'src/common/utils/admin.guard';
 import { DeleteServerFunctionDto } from './dtos/deleteServerFunctionDto';
 
@@ -22,17 +21,22 @@ export class ServerFunctionsController {
   public createServerFunction(
     @Body() createServerFunctionDto: CreateServerFunctionDto,
   ) {
-    return this.serverFunctionsService.createServerFunction(createServerFunctionDto);
+    return this.serverFunctionsService.createServerFunction(
+      createServerFunctionDto,
+    );
   }
 
   @Post('run')
-  public runServerFunction(@Body() runServerFunctionDto: RunServerFunctionDto) {
-    return this.serverFunctionsService.runServerFunction(runServerFunctionDto);
+  public runServerFunction(@Req() req: Request, @Res() res: Response) {
+    res.status(500);
+    this.serverFunctionsService.runServerFunction(req, res);
   }
 
   @Post('delete')
   @UseGuards(AdminGuard)
-  public deleteServerFunction(@Body() deleteServerFunctionDto: DeleteServerFunctionDto) {
+  public deleteServerFunction(
+    @Body() deleteServerFunctionDto: DeleteServerFunctionDto,
+  ) {
     this.serverFunctionsService.deleteServerFunction(deleteServerFunctionDto);
   }
 }
