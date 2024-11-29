@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ServerFunctionsService } from './server-functions.service';
 import { CreateServerFunctionDto } from './dtos/createServerFunctionDto';
 import { RunServerFunctionDto } from './dtos/runServerFunctionDto';
+import { AdminGuard } from 'src/common/utils/admin.guard';
 
 // TODO: add auth guards
 @Controller('server-functions')
@@ -11,6 +12,7 @@ export class ServerFunctionsController {
   ) {}
 
   @Post('create')
+  @UseGuards(AdminGuard)
   public createServerFunction(
     @Body() createServerFunctionDto: CreateServerFunctionDto,
   ) {
