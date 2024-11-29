@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { SetDto } from './dtos/setDto';
 import { DeleteDto } from './dtos/deleteDto';
@@ -59,7 +59,7 @@ export class DatabaseClientService {
   public async delete(deleteDto: DeleteDto) {
     let data = await this.DataModel.findOneAndUpdate({});
     if (!data) {
-      throw new Error("Object at path doesn't exist");
+      throw new BadRequestException("Object at path doesn't exist");
     }
 
     data.set(deleteDto.path, undefined);
