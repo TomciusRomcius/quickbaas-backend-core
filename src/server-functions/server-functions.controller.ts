@@ -12,6 +12,11 @@ export class ServerFunctionsController {
     private readonly serverFunctionsService: ServerFunctionsService,
   ) {}
 
+  @Post('get')
+  @UseGuards(AdminGuard)
+  public getServerFunctions() {
+    return this.serverFunctionsService.getServerFunctions();
+  }
   @Post('create')
   @UseGuards(AdminGuard)
   public createServerFunction(
