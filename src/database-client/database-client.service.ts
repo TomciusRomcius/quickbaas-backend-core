@@ -17,9 +17,21 @@ export class DatabaseClientService {
 
   // TODO: Fix get with arrays
   public async get(getDto: DeleteDto) {
-    return await this.DataModel.findOne({}, {
-      [getDto.path]: 1,
+    const data = await this.DataModel.findOne(
+      {},
+      {
+        [getDto.path]: 1,
+      },
+    );
+
+    const pathParts = getDto.path.split('.');
+
+    let ref = data;
+    pathParts.forEach((path) => {
+      ref = ref[path];
     });
+
+    return ref;
   }
 
   public async set(setDto: SetDto) {
