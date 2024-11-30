@@ -15,7 +15,6 @@ export class ServerMiddlewareService {
     const dbMiddlewares = await ServerMiddlewareModel.find();
     this.middlewares = [];
     dbMiddlewares.forEach((middleware) => {
-      console.log('new');
       const context = {
         databaseClientService: this.databaseClientService,
       };
