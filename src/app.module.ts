@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -9,7 +9,11 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseClientModule } from './database-client/database-client.module';
 import { DatabaseModule } from './database/database.module';
-import { ServerFunctionsModule } from './server-functions/server-functions.module';
+import { ServerMiddlewareModule } from './functions/server-middleware/server-middleware.module';
+import { ServerFunctionsModule } from './functions/server-functions/server-functions.module';
+import { DatabaseClientOperationService } from './database-client-operation/database-client-operation.service';
+import { DatabaseClientOperationModule } from './database-client-operation/database-client-operation.module';
+import { JwtMiddleware } from './common/utils/jwtMiddleware';
 
 @Module({
   imports: [
@@ -24,8 +28,19 @@ import { ServerFunctionsModule } from './server-functions/server-functions.modul
     DatabaseClientModule,
     DatabaseModule,
     ServerFunctionsModule,
+    ServerMiddlewareModule,
+    DatabaseClientOperationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DatabaseService, JwtService],
+  providers: [
+    AppService,
+    DatabaseService,
+    JwtService,
+    DatabaseClientOperationService,
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes('*');
+  }
+}
