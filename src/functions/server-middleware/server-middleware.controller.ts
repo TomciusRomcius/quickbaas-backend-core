@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ServerMiddlewareService } from './server-middleware.service';
 import { AdminGuard } from 'src/common/utils/admin.guard';
 import { CreateMiddlewareDto } from './dtos/createMiddlewareDto';
+import { UpdateMiddlewareDto } from './dtos/updateMiddlewareDto';
 
 @Controller('server-middleware')
 export class ServerMiddlewareController {
@@ -22,9 +23,11 @@ export class ServerMiddlewareController {
     );
   }
 
-  @Post()
-  public updateMiddleware() {}
+  @Post('update')
+  public async updateMiddleware(@Body() updateMiddlewareDto: UpdateMiddlewareDto) {
+    return await this.serverMiddlewareService.updateMiddleware(updateMiddlewareDto)
+  }
 
-  @Post()
+  @Post('delete')
   public deleteMiddleware() {}
 }
