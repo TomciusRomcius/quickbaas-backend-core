@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseClientService } from 'src/database-client/database-client.service';
 import { CreateServerFunctionDto } from './dtos/createServerFunctionDto';
-import ServerFunction from './features/server-function';
 import ServerFunctionModel from 'src/common/models/serverFunctionModel';
 import { DeleteServerFunctionDto } from './dtos/deleteServerFunctionDto';
+import ServerFunction from '../utils/server-function';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class ServerFunctionsService {

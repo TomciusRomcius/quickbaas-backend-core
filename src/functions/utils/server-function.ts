@@ -1,4 +1,5 @@
 import * as vm from 'node:vm';
+import { Request, Response, NextFunction } from 'express';
 
 export default class ServerFunction {
   name: string;

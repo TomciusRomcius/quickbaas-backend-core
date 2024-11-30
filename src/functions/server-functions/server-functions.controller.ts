@@ -3,6 +3,7 @@ import { ServerFunctionsService } from './server-functions.service';
 import { CreateServerFunctionDto } from './dtos/createServerFunctionDto';
 import { AdminGuard } from 'src/common/utils/admin.guard';
 import { DeleteServerFunctionDto } from './dtos/deleteServerFunctionDto';
+import { Request, Response } from 'express';
 
 // TODO: add auth guards
 @Controller('server-functions')
@@ -16,6 +17,7 @@ export class ServerFunctionsController {
   public getServerFunctions() {
     return this.serverFunctionsService.getServerFunctions();
   }
+  
   @Post('create')
   @UseGuards(AdminGuard)
   public createServerFunction(
@@ -28,7 +30,6 @@ export class ServerFunctionsController {
 
   @Post('run')
   public runServerFunction(@Req() req: Request, @Res() res: Response) {
-    res.status(500);
     this.serverFunctionsService.runServerFunction(req, res);
   }
 
