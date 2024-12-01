@@ -10,7 +10,7 @@ export class CreateMiddlewareDto {
   code: string;
 
   @IsDefined()
-  executesOn: {
+  runsOn: {
     database: boolean,
     auth: boolean,
   };

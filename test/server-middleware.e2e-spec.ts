@@ -25,7 +25,7 @@ describe('Server middleware with database-client test', () => {
     const payload = {
       name: 'middlewaretest',
       code: 'console.log("test")',
-      executesOn: {
+      runsOn: {
         database: true,
         auth: true,
       },
@@ -44,7 +44,7 @@ describe('Server middleware with database-client test', () => {
     const payload = {
       name: 'middlewaretest',
       code: 'res.status(400).json("custom"); cancelRequest()',
-      executesOn: {
+      runsOn: {
         database: true,
         auth: true,
       },

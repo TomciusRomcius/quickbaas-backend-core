@@ -12,14 +12,22 @@ export class ServerMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     await this.serverMiddlewareService.getAllMiddleware();
-    console.log(this.serverMiddlewareService.middlewares.length);
-
+    console.log(req.url);
     let shouldCancelRequest = false;
 
     const cancelRequest = () => (shouldCancelRequest = true);
 
+    let requestEnv = '';
+    if (req.url.includes('database-client')) {
+      requestEnv = 'database';
+    }
+
+    else if (req.url.includes('auth')) {
+      requestEnv = 'auth';
+    }
+
     this.serverMiddlewareService.middlewares.forEach((middleware) => {
-      middleware.tryRun(req, res, 'database', { cancelRequest: cancelRequest });
+      middleware.tryRun(req, res, requestEnv, { cancelRequest: cancelRequest });
     });
 
     if (shouldCancelRequest) {

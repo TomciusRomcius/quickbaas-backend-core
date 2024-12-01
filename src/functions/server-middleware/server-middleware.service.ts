@@ -23,6 +23,7 @@ export class ServerMiddlewareService {
       this.middlewares.push(
         new MiddlewareFunctionWrapper(
           new ServerFunction(middleware.name, middleware.code, context),
+          middleware.runsOn,
         ),
       );
     });
@@ -32,7 +33,7 @@ export class ServerMiddlewareService {
     const middleware = await new ServerMiddlewareModel({
       name: createMiddlewareDto.name,
       code: createMiddlewareDto.code,
-      executesOn: createMiddlewareDto.executesOn,
+      runsOn: createMiddlewareDto.runsOn,
     });
 
     await middleware.save();

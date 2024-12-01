@@ -11,7 +11,7 @@ const serverMiddlewareSchema = new Schema({
     required: true,
     unique: false,
   },
-  executesOn: {
+  runsOn: {
     type: {
       database: Boolean,
       auth: Boolean,
