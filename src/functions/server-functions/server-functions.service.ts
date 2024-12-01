@@ -1,16 +1,22 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { DatabaseClientService } from 'src/database-client/database-client.service';
-import { CreateServerFunctionDto } from './dtos/createServerFunctionDto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import ServerFunctionModel from 'src/common/models/serverFunctionModel';
 import { DeleteServerFunctionDto } from './dtos/deleteServerFunctionDto';
 import ServerFunction from '../utils/server-function';
 import { Request, Response } from 'express';
+import { DatabaseClientOperationService } from 'src/database-client-operation/database-client-operation.service';
+import { CreateServerFunctionDto } from './dtos/createServerFunctionDto';
 
 @Injectable()
 export class ServerFunctionsService {
   serverFunctions = new Map<string, ServerFunction>();
 
-  constructor(private databaseClientService: DatabaseClientService) {}
+  constructor(
+    private databaseClientOperationService: DatabaseClientOperationService,
+  ) {}
 
   async onModuleInit() {
     const fns = await ServerFunctionModel.find();
@@ -18,7 +24,7 @@ export class ServerFunctionsService {
       this.serverFunctions.set(
         fn.name,
         new ServerFunction(fn.name, fn.code, {
-          databaseClientService: this.databaseClientService,
+          databaseClientOperationService: this.databaseClientOperationService,
         }),
       );
     });
@@ -41,7 +47,7 @@ export class ServerFunctionsService {
       createServerFunctionDto.name,
       createServerFunctionDto.code,
       {
-        databaseClientService: this.databaseClientService,
+        databaseClientOperationService: this.databaseClientOperationService,
       },
     );
 
@@ -56,7 +62,9 @@ export class ServerFunctionsService {
 
   public async runServerFunction(req: Request, res: Response) {
     if (!req.body['name'] || typeof req.body['name'] !== 'string') {
-      throw new BadRequestException('You must provide the server function name');
+      throw new BadRequestException(
+        'You must provide the server function name',
+      );
     }
     const fn = this.serverFunctions.get(req.body['name']);
     if (!fn) {

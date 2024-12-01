@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ServerFunctionsService } from './server-functions.service';
 import { ServerFunctionsController } from './server-functions.controller';
-import { DatabaseClientModule } from 'src/database-client/database-client.module';
+import { DatabaseClientOperationModule } from 'src/database-client-operation/database-client-operation.module';
 
 @Module({
-  imports: [DatabaseClientModule],
+  imports: [DatabaseClientOperationModule],
   controllers: [ServerFunctionsController],
   providers: [ServerFunctionsService],
 })

@@ -1,29 +1,31 @@
 import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
-import { DatabaseClientService } from './database-client.service';
 import { SetDto } from './dtos/setDto';
 import { DeleteDto } from './dtos/deleteDto';
+import { DatabaseClientOperationService } from 'src/database-client-operation/database-client-operation.service';
 
 @Controller('database-client')
 export class DatabaseClientController {
-  constructor(private readonly databaseClientService: DatabaseClientService) {}
+  constructor(
+    private readonly databaseClientOperationService: DatabaseClientOperationService,
+  ) {}
 
   @Post('get')
   public async get(@Body() getDto: DeleteDto) {
-    return await this.databaseClientService.get(getDto);
+    return await this.databaseClientOperationService.get(getDto);
   }
 
   @Post('set')
   public async set(@Body() setDto: SetDto) {
-    this.databaseClientService.set(setDto);
+    this.databaseClientOperationService.set(setDto);
   }
 
   @Post('push')
   public async push(@Body() setDto: SetDto) {
-    this.databaseClientService.push(setDto);
+    this.databaseClientOperationService.push(setDto);
   }
 
   @Delete('delete')
   public async delete(@Body() deleteDto: DeleteDto) {
-    this.databaseClientService.delete(deleteDto);
+    this.databaseClientOperationService.delete(deleteDto);
   }
 }
