@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NestMiddleware,
-} from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ServerMiddlewareService } from './server-middleware.service';
 import { DatabaseClientOperationService } from 'src/database-client-operation/database-client-operation.service';
@@ -14,12 +11,19 @@ export class ServerMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    // throw new UnauthorizedException('unauthorized');
     await this.serverMiddlewareService.getAllMiddleware();
     console.log(this.serverMiddlewareService.middlewares.length);
+
+    let shouldCancelRequest = false;
+
+    const cancelRequest = () => (shouldCancelRequest = true);
+
     this.serverMiddlewareService.middlewares.forEach((middleware) => {
-      middleware.tryRun(req, res, 'database');
+      middleware.tryRun(req, res, 'database', { cancelRequest: cancelRequest });
     });
-    next();
+
+    if (shouldCancelRequest) {
+      return res.send();
+    } else next();
   }
 }

@@ -10,7 +10,7 @@ export class MiddlewareFunctionWrapper {
   }
 
   // Environment: database or auth
-  tryRun(req: Request, res: Response, environment: string) {
-    this.serverFunction.run(req, res);
+  tryRun(req: Request, res: Response, environment: string, additionalContext?: {}) {
+    this.serverFunction.run(req, res, additionalContext);
   }
 }

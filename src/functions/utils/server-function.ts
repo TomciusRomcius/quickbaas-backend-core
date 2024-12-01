@@ -14,11 +14,12 @@ export default class ServerFunction {
     this.script = new vm.Script(this.userCode);
   }
 
-  public run(req: Request, res: Response) {
+  public run(req: Request, res: Response, additionalContext?: {}) {
     const contextifiedSandbox = vm.createContext({
       ...this.context,
       req: req,
       res: res,
+      ...additionalContext,
     });
     this.script.runInContext(contextifiedSandbox);
   }
