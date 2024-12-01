@@ -9,7 +9,11 @@ export class DatabaseClientService {
 
   public onModuleInit() {
     const schema = new mongoose.Schema({}, { strict: false });
-    this.DataModel = mongoose.model('client-space', schema);
+    try {
+      this.DataModel = mongoose.model('client-space', schema);
+    } catch {
+      this.DataModel = mongoose.model('client-space');
+    }
     if (!this.DataModel) {
       throw new Error('Failed to create the DataModel');
     }
