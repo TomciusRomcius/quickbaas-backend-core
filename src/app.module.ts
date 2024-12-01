@@ -14,13 +14,11 @@ import { ServerFunctionsModule } from './functions/server-functions/server-funct
 import { DatabaseClientOperationService } from './database-client-operation/database-client-operation.service';
 import { DatabaseClientOperationModule } from './database-client-operation/database-client-operation.module';
 import { JwtMiddleware } from './common/utils/jwtMiddleware';
+import { setupConfigModule } from './common/utils/setup-config-module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env.development.local',
-      isGlobal: true,
-    }),
+    setupConfigModule(),
     DatabaseModule,
     JwtModule,
     UserModule,
