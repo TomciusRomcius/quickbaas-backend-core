@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { config } from 'dotenv';
 import ServerMiddleware from 'src/common/models/serverMiddlewareModel';
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
