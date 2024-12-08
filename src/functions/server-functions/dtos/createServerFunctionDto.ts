@@ -1,11 +1,7 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
+import { ServerFunctionDto } from './serverFunctionDto';
 
 export class CreateServerFunctionDto {
-  @IsString()
   @IsNotEmpty()
-  name: string;
-  
-  @IsString()
-  @IsNotEmpty()
-  code: string;
+  functions: ServerFunctionDto[];
 }
