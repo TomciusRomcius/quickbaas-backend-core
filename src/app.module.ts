@@ -15,6 +15,7 @@ import { DatabaseClientOperationService } from './database-client-operation/data
 import { DatabaseClientOperationModule } from './database-client-operation/database-client-operation.module';
 import { JwtMiddleware } from './common/utils/jwtMiddleware';
 import { setupConfigModule } from './common/utils/setup-config-module';
+import { DatabaseRulesModule } from './database-rules/database-rules.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { setupConfigModule } from './common/utils/setup-config-module';
     ServerFunctionsModule,
     ServerMiddlewareModule,
     DatabaseClientOperationModule,
+    DatabaseRulesModule,
   ],
   controllers: [AppController],
   providers: [
