@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import ServerFunctionModel from 'src/common/models/serverFunctionModel';
@@ -43,21 +44,31 @@ export class ServerFunctionsService {
   public async createServerFunction(
     createServerFunctionDto: CreateServerFunctionDto,
   ) {
-    const fn = new ServerFunction(
-      createServerFunctionDto.name,
-      createServerFunctionDto.code,
-      {
-        databaseClientOperationService: this.databaseClientOperationService,
-      },
-    );
+    const promises = [];
 
-    const dbFn = await new ServerFunctionModel({
-      name: createServerFunctionDto.name,
-      code: createServerFunctionDto.code,
+    createServerFunctionDto.functions.forEach((fnDto) => {
+      const call = async () => {
+        const fn = new ServerFunction(fnDto.name, fnDto.code, {
+          databaseClientOperationService: this.databaseClientOperationService,
+        });
+
+        const dbFn = await new ServerFunctionModel({
+          name: fnDto.name,
+          code: fnDto.code,
+        });
+        dbFn.save();
+
+        this.serverFunctions.set(fn.name, fn);
+      };
+
+      promises.push(call());
     });
-    dbFn.save();
 
-    this.serverFunctions.set(fn.name, fn);
+    try {
+      Promise.all(promises);
+    } catch (err) {
+      throw new InternalServerErrorException();
+    }
   }
 
   public async runServerFunction(req: Request, res: Response) {
