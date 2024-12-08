@@ -9,8 +9,8 @@ describe('ServerFunction', () => {
     } as Request;
 
     const mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
     } as Response;
 
     return { mockReq: mockReq, mockRes: mockRes };
