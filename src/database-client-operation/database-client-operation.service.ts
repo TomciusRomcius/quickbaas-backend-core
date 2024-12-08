@@ -32,6 +32,7 @@ export class DatabaseClientOperationService {
 
     let ref = data;
     pathParts.forEach((path) => {
+      if (ref === null || ref === undefined) return null;
       ref = ref[path];
     });
 
