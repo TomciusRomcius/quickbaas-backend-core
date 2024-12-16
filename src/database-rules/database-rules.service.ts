@@ -1,68 +1,71 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NestMiddleware,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SetDatabaseRulesDto } from './dtos/setDatabaseRulesDto';
 import DatabaseRules from 'src/common/models/database-rules-model';
+import SandboxedFunction from 'src/common/utils/sandboxedFunction';
+import { Request } from 'express';
 
 // TODO: use only Redis for database rules
 
 @Injectable()
 export class DatabaseRulesService {
+  databaseRules: unknown;
+
+  async onModuleInit() {
+    console.log('initing rules');
+    await this.loadDbRules();
+  }
+
   public async getDatabaseRules(): Promise<string> {
     return 'Not implemented';
   }
   public async setDatabaseRules(
     setDatabaseRulesDto: SetDatabaseRulesDto,
-  ): Promise<void> {}
+  ): Promise<void> {
+    await DatabaseRules.deleteMany();
+    await DatabaseRules.create({ ...setDatabaseRulesDto.rules });
+  }
   public async validateQuery(
-    dbRules: unknown,
+    req: Request,
     path: string,
     operation: 'read' | 'write',
   ): Promise<boolean> {
+    await this.loadDbRules();
+    console.log(this.databaseRules);
+    if (!this.databaseRules) return true;
+
     const pathParts = path.split('.');
 
-    let ref = dbRules;
+    let ref = this.databaseRules;
     for (let pathPart of pathParts) {
       if (!ref) continue;
       ref = ref[pathPart];
     }
 
-    console.log(dbRules);
+    const context = {
+      fnResult: false,
+      req: req,
+    };
 
     if (operation === 'write') {
-      if (ref['.write'] === undefined) return true;
-      if (ref['.write'] === true) return true;
+      const writeRef = ref['.write'];
+      if (writeRef === false) return false;
+      else if (typeof writeRef == 'string') {
+        const fn = new SandboxedFunction(`fnResult = ${writeRef}`);
+        fn.run(context);
+        return context.fnResult;
+      } else return true;
     } else if (operation === 'read') {
-      if (ref['.read'] === undefined) return true;
-      if (ref['.read'] === true) return true;
+      const readRef = ref['.read'];
+      if (readRef === false) return false;
+      else if (typeof readRef == 'string') {
+        const fn = new SandboxedFunction(`fnResult = ${readRef}`);
+        fn.run(context);
+        return context.fnResult;
+      } else return true;
     }
   }
-}
 
-export class DatabaseRulesMiddleware implements NestMiddleware {
-  constructor(private databaseRulesService: DatabaseRulesService) {}
-
-  use(req: Request, res: Response, next: (error?: Error | any) => void) {
-    let operation: 'read' | 'write' | null = null;
-    if (req.url.includes('database-client/get')) {
-      operation = 'read';
-    } else if (req.url.includes('database-client/set')) {
-      operation = 'write';
-    }
-
-    if (operation === null) {
-      // Should never happen
-      Logger.error(
-        'Database rules middleware was used on not a database client controller',
-      );
-      throw new InternalServerErrorException();
-    }
-
-    // this.databaseRulesService.validateQuery(req.body.rules, operation);
-
-    next();
+  private async loadDbRules() {
+    this.databaseRules = (await DatabaseRules.findOne())?.toObject();
   }
 }

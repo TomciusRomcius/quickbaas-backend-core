@@ -5,7 +5,6 @@ import { UserModule } from './user/user.module';
 import { DatabaseService } from './database/database.service';
 import { JwtService } from './jwt/jwt.service';
 import { JwtModule } from './jwt/jwt.module';
-import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseClientModule } from './database-client/database-client.module';
 import { DatabaseModule } from './database/database.module';
@@ -24,10 +23,9 @@ import { DatabaseRulesModule } from './database-rules/database-rules.module';
     JwtModule,
     UserModule,
     AuthModule,
-    DatabaseClientModule,
-    DatabaseModule,
     ServerFunctionsModule,
     ServerMiddlewareModule,
+    DatabaseClientModule,
     DatabaseClientOperationModule,
     DatabaseRulesModule,
   ],
