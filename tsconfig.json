@@ -21,7 +21,9 @@
     "resolveJsonModule": true,
   },
   "include": [
-    "./**/*.ts",
-    "./**/*.json",
+    "./src/**/*.ts",
+    "./src/**/*.json",
+    "./e2e/**/*.ts",
+    "./e2e/**/*.json",
   ],
 }
