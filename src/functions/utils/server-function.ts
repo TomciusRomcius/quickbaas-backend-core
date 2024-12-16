@@ -1,6 +1,7 @@
 import * as vm from 'node:vm';
 import { Request, Response, NextFunction } from 'express';
 
+// TODO: make it a wrapper of SandboxedFunction
 export default class ServerFunction {
   name: string;
   userCode: string;
