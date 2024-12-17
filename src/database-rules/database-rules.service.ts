@@ -22,8 +22,11 @@ export class DatabaseRulesService {
     setDatabaseRulesDto: SetDatabaseRulesDto,
   ): Promise<void> {
     await DatabaseRules.deleteMany();
-    await DatabaseRules.create({ ...setDatabaseRulesDto.rules });
+    if (setDatabaseRulesDto.rules !== undefined) {
+      await DatabaseRules.create(setDatabaseRulesDto.rules);
+    }
   }
+
   public async validateQuery(
     req: Request,
     path: string,
