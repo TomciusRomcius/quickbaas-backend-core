@@ -17,7 +17,10 @@ export class DatabaseRulesMiddleware implements NestMiddleware {
     let operation: 'read' | 'write' | null = null;
     if (req.url.includes('database-client/get')) {
       operation = 'read';
-    } else if (req.url.includes('database-client/set')) {
+    } else if (
+      req.url.includes('database-client/set') ||
+      req.url.includes('database-client/push')
+    ) {
       operation = 'write';
     }
 

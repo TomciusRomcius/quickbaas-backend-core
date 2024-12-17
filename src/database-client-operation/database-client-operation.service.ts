@@ -50,14 +50,14 @@ export class DatabaseClientOperationService {
   }
 
   public async push(setDto: SetDto) {
-    let data = await this.DataModel.findOneAndUpdate(
-      {},
-      { $push: { [setDto.path]: setDto.value } },
-    );
+    const newId = new mongoose.Types.ObjectId().toString();
+
+    let data = await this.DataModel.findOne();
     if (!data) {
       data = await new this.DataModel();
     }
 
+    data.set(`${setDto.path}.${newId}`, setDto.value);
     data.save();
   }
 
