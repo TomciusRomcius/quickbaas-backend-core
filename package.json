@@ -14,7 +14,7 @@
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "cross-env NODE_ENV=testing jest",
-    "test:watch": "cross-env NODE_ENV=testing vitest --watchAll",
+    "test:watch": "cross-env NODE_ENV=testing jest --watchAll",
     "test:e2e": "cross-env NODE_ENV=testing jest --watchAll e2e"
   },
   "dependencies": {
