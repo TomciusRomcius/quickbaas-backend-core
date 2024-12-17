@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
+import { navigateStringPath } from 'src/common/utils/navigateStringPath';
 import { DeleteDto } from 'src/database-client/dtos/deleteDto';
 import { SetDto } from 'src/database-client/dtos/setDto';
 
@@ -28,15 +29,7 @@ export class DatabaseClientOperationService {
       },
     );
 
-    const pathParts = getDto.path.split('.');
-
-    let ref = data;
-    pathParts.forEach((path) => {
-      if (ref === null || ref === undefined) return null;
-      ref = ref[path];
-    });
-
-    return ref;
+    return navigateStringPath(data, getDto.path);
   }
 
   public async set(setDto: SetDto) {

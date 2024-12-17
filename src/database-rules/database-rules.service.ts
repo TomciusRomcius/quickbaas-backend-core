@@ -3,6 +3,7 @@ import { SetDatabaseRulesDto } from './dtos/setDatabaseRulesDto';
 import DatabaseRules from 'src/common/models/database-rules-model';
 import SandboxedFunction from 'src/common/utils/sandboxedFunction';
 import { Request } from 'express';
+import { navigateStringPath } from 'src/common/utils/navigateStringPath';
 
 // TODO: use only Redis for database rules
 // TODO implement database updating across multiple backends
@@ -41,11 +42,7 @@ export class DatabaseRulesService {
     }
     const pathParts = path.split('.');
 
-    let ref = this.databaseRules;
-    for (let pathPart of pathParts) {
-      if (!ref) continue;
-      ref = ref[pathPart];
-    }
+    let ref = navigateStringPath(this.databaseRules, path);
 
     const context = {
       fnResult: false,
