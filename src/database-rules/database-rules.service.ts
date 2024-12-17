@@ -5,6 +5,7 @@ import SandboxedFunction from 'src/common/utils/sandboxedFunction';
 import { Request } from 'express';
 
 // TODO: use only Redis for database rules
+// TODO implement database updating across multiple backends
 
 @Injectable()
 export class DatabaseRulesService {
@@ -15,8 +16,8 @@ export class DatabaseRulesService {
     await this.loadDbRules();
   }
 
-  public async getDatabaseRules(): Promise<string> {
-    return 'Not implemented';
+  public async getDatabaseRules(): Promise<unknown> {
+    return (await DatabaseRules.findOne()).toObject();
   }
   public async setDatabaseRules(
     setDatabaseRulesDto: SetDatabaseRulesDto,
