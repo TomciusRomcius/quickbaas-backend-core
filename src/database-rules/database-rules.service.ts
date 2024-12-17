@@ -36,6 +36,9 @@ export class DatabaseRulesService {
     await this.loadDbRules();
     if (!this.databaseRules) return true;
 
+    if (!path) {
+      return false;
+    }
     const pathParts = path.split('.');
 
     let ref = this.databaseRules;
