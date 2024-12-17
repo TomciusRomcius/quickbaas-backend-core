@@ -1,15 +1,15 @@
-import mongoose from 'mongoose';
 import ServerMiddleware from 'src/common/models/serverMiddlewareModel';
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import { INestApplication } from '@nestjs/common';
+import { connectToTestDbs } from './utils';
 
 describe('Server middleware with database-client test', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
-    await mongoose.connect(process.env.DATABASE_URLS);
+    await connectToTestDbs();
     await ServerMiddleware.deleteMany();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({

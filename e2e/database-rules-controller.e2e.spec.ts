@@ -1,6 +1,5 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import mongoose from 'mongoose';
 import { AppModule } from 'src/app.module';
 import DatabaseRules from 'src/common/models/database-rules-model';
 import * as request from 'supertest';
@@ -9,7 +8,7 @@ describe('Database rules', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
-    await mongoose.connect(process.env.DATABASE_URLS);
+    await connectToTestDbs();
     await DatabaseRules.deleteMany();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,7 +17,6 @@ describe('Database rules', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    console.log('inited');
   });
 
   it('should be able to add and remove database rules', async () => {
