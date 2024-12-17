@@ -15,6 +15,8 @@ export class DatabaseRulesMiddleware implements NestMiddleware {
     // Check if the user is trying to do a write or read operation
     let operation: 'read' | 'write' | null = null;
 
+    // TODO: fix trailing slash sensitivity
+
     const pathname = new URL(
       `http://${process.env.HOST ?? 'localhost'}${req.url}`,
     ).pathname;
@@ -29,7 +31,7 @@ export class DatabaseRulesMiddleware implements NestMiddleware {
     }
 
     if (operation === null) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Invalid URL');
     }
 
     // Process the request and check if database rules allow the request
