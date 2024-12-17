@@ -1,7 +1,6 @@
 import {
   Injectable,
   InternalServerErrorException,
-  Logger,
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,25 +9,26 @@ import { DatabaseRulesService } from './database-rules.service';
 
 @Injectable()
 export class DatabaseRulesMiddleware implements NestMiddleware {
-  constructor(private databaseRulesService: DatabaseRulesService) {}
+  constructor(private readonly databaseRulesService: DatabaseRulesService) {}
 
   async use(req: Request, res: Response, next: (error?: Error | any) => void) {
     // Check if the user is trying to do a write or read operation
     let operation: 'read' | 'write' | null = null;
-    if (req.url.includes('database-client/get')) {
+
+    const pathname = new URL(
+      `http://${process.env.HOST ?? 'localhost'}${req.url}`,
+    ).pathname;
+
+    if (pathname === '/database-client/get/') {
       operation = 'read';
     } else if (
-      req.url.includes('database-client/set') ||
-      req.url.includes('database-client/push')
+      pathname === '/database-client/set/' ||
+      pathname === '/database-client/push/'
     ) {
       operation = 'write';
     }
 
     if (operation === null) {
-      // Should never happen
-      Logger.error(
-        'Database rules middleware was used on not a database client controller',
-      );
       throw new InternalServerErrorException();
     }
 
