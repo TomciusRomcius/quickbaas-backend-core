@@ -1,15 +1,17 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AdminGuard } from 'src/common/utils/admin.guard';
 import { SetDatabaseRulesDto } from './dtos/setDatabaseRulesDto';
 import { DatabaseRulesService } from './database-rules.service';
 
 @Controller('database-rules')
 export class DatabaseRulesController {
-  constructor(private databaseRulesService: DatabaseRulesService) {}
+  constructor(private readonly databaseRulesService: DatabaseRulesService) {}
 
   @UseGuards(AdminGuard)
-  @Get('get')
-  async getDatabaseRules() {}
+  @Post('get')
+  async getDatabaseRules() {
+    return await this.databaseRulesService.getDatabaseRules();
+  }
 
   @UseGuards(AdminGuard)
   @Post('set')
