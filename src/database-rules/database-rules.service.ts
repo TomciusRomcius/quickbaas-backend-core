@@ -12,7 +12,6 @@ export class DatabaseRulesService {
   databaseRules: unknown;
 
   async onModuleInit() {
-    console.log('initing rules');
     await this.loadDbRules();
   }
 
@@ -34,7 +33,6 @@ export class DatabaseRulesService {
     operation: 'read' | 'write',
   ): Promise<boolean> {
     await this.loadDbRules();
-    console.log(this.databaseRules);
     if (!this.databaseRules) return true;
 
     const pathParts = path.split('.');
