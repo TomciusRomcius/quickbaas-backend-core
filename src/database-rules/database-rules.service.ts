@@ -16,7 +16,8 @@ export class DatabaseRulesService {
   }
 
   public async getDatabaseRules(): Promise<unknown> {
-    return (await DatabaseRules.findOne()).toObject();
+    await this.loadDbRules();
+    return this.databaseRules;
   }
   public async setDatabaseRules(
     setDatabaseRulesDto: SetDatabaseRulesDto,
