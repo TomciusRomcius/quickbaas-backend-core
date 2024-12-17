@@ -1,3 +1,6 @@
+import { IsIn, IsObject } from 'class-validator';
+
 export class SetDatabaseRulesDto {
-  rules: {};
+  @IsObject()
+  rules?: any;
 }
