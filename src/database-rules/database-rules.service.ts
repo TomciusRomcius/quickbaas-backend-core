@@ -3,7 +3,6 @@ import { SetDatabaseRulesDto } from './dtos/setDatabaseRulesDto';
 import DatabaseRules from 'src/common/models/database-rules-model';
 import SandboxedFunction from 'src/common/utils/sandboxedFunction';
 import { Request } from 'express';
-import { DatabaseClientOperationService } from 'src/database-client-operation/database-client-operation.service';
 
 class DatabasePath {
   private readonly parts: string[] = [];
@@ -39,10 +38,6 @@ class DatabasePath {
 export class DatabaseRulesService {
   databaseRules: unknown;
 
-  constructor(
-    private readonly databaseClientOperationService: DatabaseClientOperationService,
-  ) {}
-
   async onModuleInit() {
     await this.loadDbRules();
   }
@@ -66,8 +61,11 @@ export class DatabaseRulesService {
     value: unknown,
     operation: 'read' | 'write',
   ): Promise<boolean> {
-    await this.loadDbRules();
-    if (!this.databaseRules) return true;
+    this.databaseRules = await this.loadDbRules();
+    if (!this.databaseRules) {
+      console.log('AAA');
+      Logger.warn('Database rules are not defined!');
+    }
 
     if (!path) {
       return false;
@@ -114,7 +112,7 @@ export class DatabaseRulesService {
         ? targetRule
         : ref?.[`.${operation}`];
     if (ref === undefined) return false;
-
+    console.log(ref);
     if (typeof ref == 'string') {
       try {
         const fn = new SandboxedFunction(`fnResult = ${ref}`);
@@ -138,7 +136,7 @@ export class DatabaseRulesService {
     return null;
   }
 
-  private async loadDbRules() {
+  public async loadDbRules() {
     this.databaseRules = (await DatabaseRules.findOne())?.toObject();
   }
 }
