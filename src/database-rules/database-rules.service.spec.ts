@@ -53,9 +53,8 @@ describe('DatabaseRulesService', () => {
 
     const req1 = createReq(args1.path, args1.value);
     const req2 = createReq(args1.path, undefined);
-
     const result1 = await databaseRulesService.validateQuery(req1, 'write');
-    const result2 = await databaseRulesService.validateQuery(req1, 'read');
+    const result2 = await databaseRulesService.validateQuery(req2, 'read');
 
     expect(result1).toBe(false);
     expect(result2).toBe(true);
