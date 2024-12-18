@@ -10,7 +10,7 @@ import { comparePasswords, hash } from 'src/common/utils/crypto';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) {}
   async signInWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const user = await User.findOne({ email: authWithPasswordDto.email });
     if (!user) {
@@ -31,7 +31,7 @@ export class AuthService {
 
   async signUpWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const passwordHash = await hash(authWithPasswordDto.password);
-    const user = await new User({
+    const user = new User({
       email: authWithPasswordDto.email,
       password: passwordHash,
     });
