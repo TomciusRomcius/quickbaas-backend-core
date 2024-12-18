@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { SetDatabaseRulesDto } from './dtos/setDatabaseRulesDto';
 import DatabaseRules from 'src/common/models/database-rules-model';
 import SandboxedFunction from 'src/common/utils/sandboxedFunction';
@@ -59,6 +59,11 @@ export class DatabaseRulesService {
     req: Request,
     operation: 'read' | 'write',
   ): Promise<boolean> {
+    if (operation === 'read' && req.body.value !== undefined) {
+      throw new BadRequestException(
+        'value property was added on a read opeation',
+      );
+    }
     this.databaseRules = await this.loadDbRules();
     if (!this.databaseRules) {
       Logger.warn('Database rules are not defined!');
@@ -77,9 +82,6 @@ export class DatabaseRulesService {
       value: value,
     };
 
-    const pathParts = path.split('.');
-    let workPath = new DatabasePath();
-
     // TODO: just clean this up
     const ref = this.findTargetRuleAndFillContext(
       context,
@@ -95,7 +97,7 @@ export class DatabaseRulesService {
     context: unknown,
     operation: string,
     path: string,
-    value: unknown,
+    value?: unknown,
   ) {
     const pathParts = path.split('.');
     let workPath = new DatabasePath();
