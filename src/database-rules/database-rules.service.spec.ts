@@ -52,20 +52,10 @@ describe('DatabaseRulesService', () => {
     };
 
     const req1 = createReq(args1.path, args1.value);
+    const req2 = createReq(args1.path, undefined);
 
-    const result1 = await databaseRulesService.validateQuery(
-      req1,
-      args1.path,
-      args1.value,
-      'write',
-    );
-
-    const result2 = await databaseRulesService.validateQuery(
-      req1,
-      args1.path,
-      undefined,
-      'read',
-    );
+    const result1 = await databaseRulesService.validateQuery(req1, 'write');
+    const result2 = await databaseRulesService.validateQuery(req1, 'read');
 
     expect(result1).toBe(false);
     expect(result2).toBe(true);
@@ -101,28 +91,12 @@ describe('DatabaseRulesService', () => {
     const req2 = createReq(args1.path, undefined);
     const req3 = createReq(args1.path, args1.value);
 
-    const result1 = await databaseRulesService.validateQuery(
-      req1,
-      args1.path,
-      args1.value,
-      'write',
-    );
-
-    const result2 = await databaseRulesService.validateQuery(
-      req2,
-      args1.path,
-      undefined,
-      'read',
-    );
+    const result1 = await databaseRulesService.validateQuery(req1, 'write');
+    const result2 = await databaseRulesService.validateQuery(req2, 'read');
 
     databaseRulesService.loadDbRules = jest.fn().mockResolvedValue(rules2);
 
-    const result3 = await databaseRulesService.validateQuery(
-      req3,
-      args1.path,
-      undefined,
-      'write',
-    );
+    const result3 = await databaseRulesService.validateQuery(req3, 'write');
 
     expect(result1).toBe(false);
     expect(result2).toBe(true);
@@ -149,19 +123,9 @@ describe('DatabaseRulesService', () => {
     const req = createReq(args1.path, args1.value, { uid: 'user1' });
     const req2 = createReq(args1.path, args1.value);
 
-    const result1 = await databaseRulesService.validateQuery(
-      req,
-      args1.path,
-      args1.value,
-      'write',
-    );
+    const result1 = await databaseRulesService.validateQuery(req, 'write');
 
-    const result2 = await databaseRulesService.validateQuery(
-      req2,
-      args1.path,
-      args1.value,
-      'write',
-    );
+    const result2 = await databaseRulesService.validateQuery(req2, 'write');
 
     expect(result1).toBe(true);
     expect(result2).toBe(false);
