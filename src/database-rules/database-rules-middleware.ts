@@ -38,6 +38,7 @@ export class DatabaseRulesMiddleware implements NestMiddleware {
     const canProceed = await this.databaseRulesService.validateQuery(
       req,
       req.body.path,
+      req.body.value,
       operation,
     );
 
