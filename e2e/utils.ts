@@ -12,3 +12,14 @@ export async function connectToTestDbs() {
     throw new Error('Test databases are not running!');
   }
 }
+
+// Can't be called before connectToTestDbs()
+export async function wipeTestDbs() {
+  const promises = [];
+
+  mongoose.connections.forEach((connection) => {
+    promises.push(connection.db.dropDatabase());
+  });
+
+  await Promise.all(promises);
+}
