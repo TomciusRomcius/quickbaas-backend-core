@@ -39,11 +39,11 @@ export class DatabaseRulesService {
   databaseRules: unknown;
 
   async onModuleInit() {
-    await this.loadDbRules();
+    this.databaseRules = await this.loadDbRules();
   }
 
   public async getDatabaseRules(): Promise<unknown> {
-    await this.loadDbRules();
+    this.databaseRules = await this.loadDbRules();
     return this.databaseRules;
   }
   public async setDatabaseRules(
@@ -63,7 +63,6 @@ export class DatabaseRulesService {
   ): Promise<boolean> {
     this.databaseRules = await this.loadDbRules();
     if (!this.databaseRules) {
-      console.log('AAA');
       Logger.warn('Database rules are not defined!');
     }
 
@@ -137,6 +136,6 @@ export class DatabaseRulesService {
   }
 
   public async loadDbRules() {
-    this.databaseRules = (await DatabaseRules.findOne())?.toObject();
+    return (await DatabaseRules.findOne())?.toObject();
   }
 }
