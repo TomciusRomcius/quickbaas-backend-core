@@ -57,14 +57,15 @@ export class DatabaseRulesService {
 
   public async validateQuery(
     req: Request,
-    path: string,
-    value: unknown,
     operation: 'read' | 'write',
   ): Promise<boolean> {
     this.databaseRules = await this.loadDbRules();
     if (!this.databaseRules) {
       Logger.warn('Database rules are not defined!');
     }
+
+    const path = req.body.path;
+    const value = req.body.value;
 
     if (!path) {
       return false;
@@ -79,20 +80,34 @@ export class DatabaseRulesService {
     const pathParts = path.split('.');
     let workPath = new DatabasePath();
 
+    // TODO: just clean this up
+    const ref = this.findTargetRuleAndFillContext(
+      context,
+      operation,
+      path,
+      value,
+    );
+
+    return this.processRule(ref, context);
+  }
+
+  private findTargetRuleAndFillContext(
+    context: unknown,
+    operation: string,
+    path: string,
+    value: unknown,
+  ) {
+    const pathParts = path.split('.');
+    let workPath = new DatabasePath();
+
     let ref = this.databaseRules;
     let targetRule = this.databaseRules;
 
     // TODO: just clean this up
     for (let pathPart of pathParts) {
       if (!ref) break;
-      if (ref[`.${operation}`] !== undefined) {
-        targetRule = ref[`.${operation}`];
-      }
-      if (ref[pathPart]) {
-        const key = pathPart.slice(1, pathPart.length - 1);
-        context[key] = ref;
-        ref = ref[pathPart];
-      } else if (!ref[pathPart]) {
+      targetRule = ref[`.${operation}`];
+      if (!ref[pathPart]) {
         const ident = this.findIdentifier(ref);
         if (ident) {
           let key = ident.slice(1, ident.length);
@@ -101,7 +116,7 @@ export class DatabaseRulesService {
           }
           ref = ref[ident];
         } else ref = null;
-      }
+      } else ref = ref[pathPart];
 
       workPath.append(pathPart);
     }
@@ -110,18 +125,22 @@ export class DatabaseRulesService {
       ref?.[`.${operation}`] === undefined
         ? targetRule
         : ref?.[`.${operation}`];
-    if (ref === undefined) return false;
-    console.log(ref);
-    if (typeof ref == 'string') {
+
+    return ref;
+  }
+
+  private processRule(rule: unknown, context: unknown) {
+    if (rule === undefined) return false;
+    if (typeof rule == 'string') {
       try {
-        const fn = new SandboxedFunction(`fnResult = ${ref}`);
+        const fn = new SandboxedFunction(`fnResult = ${rule}`);
         fn.run(context);
       } catch {
         return false;
       }
-      return context.fnResult;
-    } else if (typeof ref == 'boolean') {
-      return ref;
+      return context?.['fnResult'];
+    } else if (typeof rule == 'boolean') {
+      return rule;
     } else return false;
   }
 

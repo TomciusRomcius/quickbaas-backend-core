@@ -37,8 +37,6 @@ export class DatabaseRulesMiddleware implements NestMiddleware {
     // Process the request and check if database rules allow the request
     const canProceed = await this.databaseRulesService.validateQuery(
       req,
-      req.body.path,
-      req.body.value,
       operation,
     );
 
