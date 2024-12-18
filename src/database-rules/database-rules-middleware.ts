@@ -12,29 +12,12 @@ export class DatabaseRulesMiddleware implements NestMiddleware {
   constructor(private readonly databaseRulesService: DatabaseRulesService) {}
 
   async use(req: Request, res: Response, next: (error?: Error | any) => void) {
-    // Check if the user is trying to do a write or read operation
-    let operation: 'read' | 'write' | null = null;
-
-    // TODO: fix trailing slash sensitivity
-
-    const pathname = new URL(
-      `http://${process.env.HOST ?? 'localhost'}${req.url}`,
-    ).pathname;
-
-    if (pathname === '/database-client/get/') {
-      operation = 'read';
-    } else if (
-      pathname === '/database-client/set/' ||
-      pathname === '/database-client/push/'
-    ) {
-      operation = 'write';
-    }
+    const operation = this.getOperation(req);
 
     if (operation === null) {
       throw new InternalServerErrorException('Invalid URL');
     }
 
-    // Process the request and check if database rules allow the request
     const canProceed = await this.databaseRulesService.validateQuery(
       req,
       operation,
@@ -45,5 +28,25 @@ export class DatabaseRulesMiddleware implements NestMiddleware {
     } else {
       throw new UnauthorizedException('Not allowed');
     }
+  }
+
+  private getOperation(req: Request) {
+    let operation: 'read' | 'write' | null = null;
+
+    const fullUrl = `http://${process.env.HOST ?? 'localhost'}${req.url}`;
+    const parsedUrl = new URL(fullUrl);
+    let pathname = parsedUrl.pathname;
+    if (pathname.endsWith('/')) pathname = pathname.slice(0, -1);
+
+    if (pathname === '/database-client/get') {
+      operation = 'read';
+    } else if (
+      pathname === '/database-client/set' ||
+      pathname === '/database-client/push'
+    ) {
+      operation = 'write';
+    }
+
+    return operation;
   }
 }
