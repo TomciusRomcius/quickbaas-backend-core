@@ -1,8 +1,8 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsOptional, IsString } from 'class-validator';
 
 export class SetDto {
   @IsString()
   path: string;
-  @IsNotEmpty()
+  @IsOptional()
   value: unknown;
 }

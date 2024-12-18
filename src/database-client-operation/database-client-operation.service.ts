@@ -38,6 +38,7 @@ export class DatabaseClientOperationService {
       data = await new this.DataModel();
     }
 
+    if (setDto.value === null) setDto.value = undefined;
     data.set(setDto.path, setDto.value);
     data.save();
   }
