@@ -98,7 +98,6 @@ export class DatabaseRulesService {
       } else if (!ref[pathPart]) {
         const ident = this.findIdentifier(ref);
         if (ident) {
-          console.log(ident);
           let key = ident.slice(1, ident.length);
           if (key) {
             context[key] = pathPart;
@@ -112,14 +111,17 @@ export class DatabaseRulesService {
 
     ref =
       ref?.[`.${operation}`] === undefined
-        ? targetRule?.[`.${operation}`]
+        ? targetRule
         : ref?.[`.${operation}`];
-
     if (ref === undefined) return false;
 
     if (typeof ref == 'string') {
-      const fn = new SandboxedFunction(`fnResult = ${ref}`);
-      fn.run(context);
+      try {
+        const fn = new SandboxedFunction(`fnResult = ${ref}`);
+        fn.run(context);
+      } catch {
+        return false;
+      }
       return context.fnResult;
     } else if (typeof ref == 'boolean') {
       return ref;
