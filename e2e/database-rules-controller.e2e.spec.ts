@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import DatabaseRules from 'src/common/models/database-rules-model';
 import * as request from 'supertest';
+import { connectToTestDbs } from './utils';
 
 describe('Database rules', () => {
   let app: INestApplication;
