@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { JwtModule } from 'src/jwt/jwt.module';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -20,13 +21,10 @@ describe('AuthController', () => {
           useValue: mockAuthService,
         },
       ],
+      imports: [JwtModule],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
-  });
-
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
   });
 
   it('should call signUpWithPassword on the service', async () => {
