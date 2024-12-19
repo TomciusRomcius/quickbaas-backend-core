@@ -19,16 +19,16 @@ export class DatabaseClientController {
 
   @Post('set')
   public async set(@Body() setDto: SetDto) {
-    this.databaseClientOperationService.set(setDto);
+    await this.databaseClientOperationService.set(setDto);
   }
 
   @Post('push')
   public async push(@Body() setDto: SetDto) {
-    this.databaseClientOperationService.push(setDto);
+    await this.databaseClientOperationService.push(setDto);
   }
 
   @Delete('delete')
   public async delete(@Body() deleteDto: DeleteDto) {
-    this.databaseClientOperationService.delete(deleteDto);
+    await this.databaseClientOperationService.delete(deleteDto);
   }
 }
