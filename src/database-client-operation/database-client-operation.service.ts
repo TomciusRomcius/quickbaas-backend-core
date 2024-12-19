@@ -33,26 +33,15 @@ export class DatabaseClientOperationService {
   }
 
   public async set(setDto: SetDto) {
-    let data = await this.DataModel.findOne();
-    if (!data) {
-      data = await new this.DataModel();
-    }
-
-    if (setDto.value === null) setDto.value = undefined;
-    data.set(setDto.path, setDto.value);
-    data.save();
+    await this.DataModel.create({ [setDto.path]: setDto.value });
   }
 
   public async push(setDto: SetDto) {
     const newId = new mongoose.Types.ObjectId().toString();
 
-    let data = await this.DataModel.findOne();
-    if (!data) {
-      data = await new this.DataModel();
-    }
-
-    data.set(`${setDto.path}.${newId}`, setDto.value);
-    data.save();
+    await this.DataModel.create({
+      [`${setDto.path}.${newId}`]: setDto.value,
+    });
   }
 
   public async delete(deleteDto: DeleteDto) {
