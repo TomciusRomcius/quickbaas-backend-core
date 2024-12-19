@@ -17,7 +17,7 @@ import { DatabaseRulesModule } from 'src/database-rules/database-rules.module';
 })
 export class DatabaseClientModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(DatabaseRulesMiddleware).forRoutes(DatabaseClientController);
     consumer.apply(ServerMiddleware).forRoutes(DatabaseClientController);
+    consumer.apply(DatabaseRulesMiddleware).forRoutes(DatabaseClientController);
   }
 }
