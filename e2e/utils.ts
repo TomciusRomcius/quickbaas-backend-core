@@ -1,16 +1,15 @@
 import mongoose from 'mongoose';
+import { GenericContainer } from 'testcontainers';
+
+let container;
 
 export async function connectToTestDbs() {
-  if (process.env.DATABASE_URLS) {
-    const promises = [];
-    process.env.DATABASE_URLS.split(' ').forEach((url) => {
-      promises.push(mongoose.connect(url));
-    });
+  container = await new GenericContainer('mongo')
+    .withExposedPorts(27017)
+    .start();
 
-    await Promise.all(promises);
-  } else {
-    throw new Error('Test databases are not running!');
-  }
+  const mongoUri = `mongodb://${container.getHost()}:${container.getMappedPort(27017)}`;
+  process.env.DATABASE_URLS = mongoUri;
 }
 
 // Can't be called before connectToTestDbs()

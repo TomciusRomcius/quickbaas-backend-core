@@ -1,23 +1,24 @@
 import ServerMiddleware from 'src/common/models/serverMiddlewareModel';
 import * as request from 'supertest';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import { INestApplication } from '@nestjs/common';
-import { connectToTestDbs } from './utils';
+import { connectToTestDbs, wipeTestDbs } from './utils';
 
 describe('Server middleware with database-client test', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await connectToTestDbs();
-    await ServerMiddleware.deleteMany();
+  });
 
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
-    app = moduleFixture.createNestApplication();
+    app = module.createNestApplication();
     await app.init();
+    await wipeTestDbs();
   });
 
   it('should succesfully create middleware', async () => {

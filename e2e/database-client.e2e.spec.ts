@@ -8,15 +8,16 @@ import DatabaseRules from 'src/common/models/database-rules-model';
 
 describe('E2E Database Client', () => {
   let app: INestApplication;
-  beforeEach(async () => {
+  beforeAll(async () => {
+    await connectToTestDbs();
     const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
     app = module.createNestApplication();
-
     await app.init();
-    await connectToTestDbs();
+  });
+
+  beforeEach(async () => {
     await wipeTestDbs();
     await DatabaseRules.create({
       app: {

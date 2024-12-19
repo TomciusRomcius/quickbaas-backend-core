@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import DatabaseRules from 'src/common/models/database-rules-model';
 import * as request from 'supertest';
@@ -8,16 +8,17 @@ import { connectToTestDbs } from './utils';
 describe('Database rules', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await connectToTestDbs();
-    await DatabaseRules.deleteMany();
-
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
-    app = moduleFixture.createNestApplication();
+    app = module.createNestApplication();
     await app.init();
+  });
+
+  beforeEach(async () => {
+    await DatabaseRules.deleteMany();
   });
 
   it('should be able to add and remove database rules', async () => {

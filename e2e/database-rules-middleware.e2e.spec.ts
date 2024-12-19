@@ -8,15 +8,18 @@ import ClientSpaceModel from 'src/common/models/client-space-model';
 
 describe('Database rules middleware', () => {
   let app: INestApplication;
-  beforeEach(async () => {
+
+  beforeAll(async () => {
     await connectToTestDbs();
-    await wipeTestDbs();
-    const moduleFixture = await Test.createTestingModule({
+    const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
-    app = moduleFixture.createNestApplication();
+    app = module.createNestApplication();
     await app.init();
+  });
+
+  beforeEach(async () => {
+    await wipeTestDbs();
   });
 
   it(`should not run database queries if database rules don't allow it`, async () => {
