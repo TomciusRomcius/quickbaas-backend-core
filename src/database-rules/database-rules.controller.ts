@@ -16,6 +16,6 @@ export class DatabaseRulesController {
   @UseGuards(AdminGuard)
   @Post('set')
   async setDatabaseRules(@Body() setDatabaseRulesDto: SetDatabaseRulesDto) {
-    this.databaseRulesService.setDatabaseRules(setDatabaseRulesDto);
+    await this.databaseRulesService.setDatabaseRules(setDatabaseRulesDto);
   }
 }
