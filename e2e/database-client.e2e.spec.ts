@@ -42,7 +42,43 @@ describe('E2E Database Client', () => {
       .send(body);
 
     expect(res.status).toBe(201);
-    console.log(res.body.result);
     expect(res.body.result).toBe('App name');
+  });
+
+  it('should be able to set data', async () => {
+    const body = {
+      path: 'app.name',
+      value: 'App name',
+    };
+    const setRes = await request(app.getHttpServer())
+      .post('/database-client/set')
+      .send(body);
+
+    expect(setRes.status).toBe(201);
+
+    const document = await ClientSpaceModel.findOne();
+    expect(document.get(body.path)).toBe('App name');
+  });
+
+  it('should be able to push data', async () => {
+    const body = {
+      path: 'app.list',
+      value: 'List item',
+    };
+    const pushRes = await request(app.getHttpServer())
+      .post('/database-client/push')
+      .send(body);
+
+    expect(pushRes.status).toBe(201);
+
+    const document = await ClientSpaceModel.findOne();
+
+    const ref = document.get(body.path);
+    let retrievedValue;
+    for (let key in ref) {
+      retrievedValue = ref[key];
+    }
+
+    expect(retrievedValue).toBe('List item');
   });
 });
