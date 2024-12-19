@@ -52,7 +52,7 @@ describe('Database rules middleware', () => {
     expect(getRes2.status).toBe(201);
   });
 
-  it.only('should work with forEach identifier $', async () => {
+  it('should work with forEach identifier $', async () => {
     const dbData = {
       users: {
         user1: {
