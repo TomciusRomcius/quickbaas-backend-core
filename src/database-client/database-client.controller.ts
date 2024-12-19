@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { SetDto } from './dtos/setDto';
 import { DeleteDto } from './dtos/deleteDto';
 import { DatabaseClientOperationService } from 'src/database-client-operation/database-client-operation.service';
@@ -11,7 +11,10 @@ export class DatabaseClientController {
 
   @Post('get')
   public async get(@Body() getDto: DeleteDto) {
-    return await this.databaseClientOperationService.get(getDto);
+    const result = await this.databaseClientOperationService.get(getDto);
+    return {
+      result: result,
+    };
   }
 
   @Post('set')
