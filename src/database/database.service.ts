@@ -12,10 +12,8 @@ export class DatabaseService {
   public async connect() {
     let urls = this.configService.get('DATABASE_URLS');
     const pendingConnections = [];
-    const isWindows = (process.platform === 'win32') ? true : false;
     if (urls) {
       (urls as string).split(' ').forEach((url) => {
-        if (isWindows) url.replace('mongo-db', '127.0.0.1');
         const connect = mongoose.connect(url);
         pendingConnections.push(connect);
       });
