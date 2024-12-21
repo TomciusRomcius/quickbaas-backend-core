@@ -1,7 +1,5 @@
 // What even is life :(
 
-import { i } from 'vite/dist/node/types.d-aGj9QkWt';
-
 export enum TokenType {
   OPERATOR = 0,
   LITERAL = 1,
