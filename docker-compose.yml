@@ -1,4 +1,20 @@
 services:
+  backend:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /data
+    command: ['pnpm', 'run', 'dev']
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
+
   mongo-db:
     image: mongo:latest
     container_name: quickbaas-mongodb
