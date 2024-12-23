@@ -65,8 +65,10 @@ export class DatabaseRulesService {
       );
     }
     this.databaseRules = await this.loadDbRules();
+    console.log("rules: ", this.databaseRules);
     if (!this.databaseRules) {
       Logger.warn('Database rules are not defined!');
+      return true;
     }
 
     const path = req.body.path;

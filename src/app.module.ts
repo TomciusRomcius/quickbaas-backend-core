@@ -15,6 +15,8 @@ import { DatabaseClientOperationModule } from './database-client-operation/datab
 import { JwtMiddleware } from './common/utils/jwtMiddleware';
 import { setupConfigModule } from './common/utils/setup-config-module';
 import { DatabaseRulesModule } from './database-rules/database-rules.module';
+import { CachingService } from './caching/caching.service';
+import { CachingModule } from './caching/caching.module';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { DatabaseRulesModule } from './database-rules/database-rules.module';
     DatabaseClientModule,
     DatabaseClientOperationModule,
     DatabaseRulesModule,
+    CachingModule,
   ],
   controllers: [AppController],
   providers: [
@@ -35,6 +38,7 @@ import { DatabaseRulesModule } from './database-rules/database-rules.module';
     DatabaseService,
     JwtService,
     DatabaseClientOperationService,
+    CachingService,
   ],
 })
 export class AppModule implements NestModule {
