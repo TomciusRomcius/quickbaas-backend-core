@@ -12,10 +12,19 @@ export class CachingService {
     await this.redisClient.connect();
   }
   async set(key: string, value: any) {
-    this.redisClient.set(key, value);
+    this.redisClient.set(key, JSON.stringify(value));
   }
   async get(key: string) {
     const retrieved = await this.redisClient.get(key);
+    let result;
+    try {
+      result = JSON.parse(retrieved);
+    } catch {
+      result = retrieved;
+    }
+    return result;
+  }
+
   public async deleteTestCache() {
     if (process.env.NODE_ENV === 'production') {
       return;
