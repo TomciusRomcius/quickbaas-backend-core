@@ -65,7 +65,6 @@ export class DatabaseRulesService {
       );
     }
     this.databaseRules = await this.loadDbRules();
-    console.log("rules: ", this.databaseRules);
     if (!this.databaseRules) {
       Logger.warn('Database rules are not defined!');
       return true;
@@ -84,7 +83,6 @@ export class DatabaseRulesService {
       value: value,
     };
 
-    // TODO: just clean this up
     const ref = this.findTargetRuleAndFillContext(
       context,
       operation,
@@ -159,6 +157,9 @@ export class DatabaseRulesService {
   }
 
   public async loadDbRules() {
-    return (await DatabaseRules.findOne())?.toObject();
+    const rules = await DatabaseRules.findOne().select('-_id -__v');
+    if (rules) {
+      return rules.toObject();
+    } else return null;
   }
 }
