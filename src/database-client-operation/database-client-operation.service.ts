@@ -81,5 +81,5 @@ export class DatabaseClientOperationService {
     data.save();
   }
 
-  public async pop() { }
+  public async pop() {}
 }
