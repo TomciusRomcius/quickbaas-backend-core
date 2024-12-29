@@ -47,8 +47,18 @@ export class DatabaseClientOperationService {
   }
 
   public async set(setDto: SetDto) {
+    let addToDbFn;
+    if (setDto.path) {
+      addToDbFn = this.DataModel.create({ [setDto.path]: setDto.value });
+    } else {
+      addToDbFn = this.DataModel.create(setDto.value);
+    }
+    const promises = [
+      this.cachingService.set(setDto.path, setDto.value),
+      addToDbFn,
+    ];
 
-    await this.DataModel.create({ [setDto.path]: setDto.value });
+    await Promise.all(promises);
   }
 
   public async push(setDto: SetDto) {
