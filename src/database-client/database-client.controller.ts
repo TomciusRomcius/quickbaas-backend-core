@@ -24,7 +24,9 @@ export class DatabaseClientController {
 
   @Post('push')
   public async push(@Body() setDto: SetDto) {
-    await this.databaseClientOperationService.push(setDto);
+    // Returns and id
+    const id = await this.databaseClientOperationService.push(setDto);
+    return { id: id };
   }
 
   @Delete('delete')

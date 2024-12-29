@@ -52,11 +52,18 @@ export class DatabaseClientOperationService {
   }
 
   public async push(setDto: SetDto) {
-    const newId = new mongoose.Types.ObjectId().toString();
+    const newId = new mongoose.Types.ObjectId()._id.toString();
+    const path = `${setDto.path}.${newId}`;
 
-    await this.DataModel.create({
-      [`${setDto.path}.${newId}`]: setDto.value,
-    });
+    const promises = [
+      this.DataModel.create({
+        [path]: setDto.value,
+      }),
+      this.cachingService.set(path, setDto.value),
+    ];
+
+    await Promise.all(promises);
+    return newId;
   }
 
   public async delete(deleteDto: DeleteDto) {
