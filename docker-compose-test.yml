@@ -1,0 +1,33 @@
+services:
+  backend:
+    extends:
+      service: backend
+      file: docker-compose.yml
+    environment:
+      - DATABASE_URLS=mongodb://root:rootpassword@mongo-db:27017/test?authSource=admin
+      - AUTH_KEY=test
+      - ADMIN_KEY=secret
+    command: ['pnpm', 'run', 'test', '&&', 'pnpm', 'run', 'test']
+
+  mongo-db:
+    extends:
+      service: mongo-db
+      file: docker-compose.yml
+    container_name: quickbaas-mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
+    volumes:
+      - ./data:/data/db
+
+  redis:
+    extends:
+      service: redis
+      file: docker-compose.yml
+
+  mongo-express:
+    extends:
+      service: mongo-express
+      file: docker-compose.yml
