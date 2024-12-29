@@ -23,27 +23,27 @@ export class DatabaseClientOperationService {
     }
   }
 
-  // TODO: Fix get with arrays
   public async get(getDto: DeleteDto) {
     const cachedData = await this.cachingService.get(getDto.path);
-    console.log(cachedData);
-    if (cachedData !== null) return cachedData;
 
     let data;
-    if (!getDto.path) {
+
+    if (cachedData !== null) {
+      data = cachedData;
+    } else if (!getDto.path) {
       data = await this.DataModel.findOne();
-    }
-    else {
+      await this.cachingService.set(getDto.path, data);
+    } else {
       data = await this.DataModel.findOne(
         {},
         {
           [getDto.path]: 1,
         },
       );
+      await this.cachingService.set(getDto.path, data);
     }
 
-    await this.cachingService.set(getDto.path, JSON.stringify(data));
-    return navigateStringPath(data, getDto.path);
+    return data;
   }
 
   public async set(setDto: SetDto) {
