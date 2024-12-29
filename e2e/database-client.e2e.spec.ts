@@ -1,85 +1,70 @@
-import ClientSpaceModel from 'src/common/models/client-space-model';
-import { connectToTestDbs, wipeTestDbs } from './utils';
+import { wipeTestDbs } from './utils';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
-import DatabaseRules from 'src/common/models/database-rules-model';
 
 describe('E2E Database Client', () => {
   let app: INestApplication;
+
   beforeAll(async () => {
-    await connectToTestDbs();
     const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
     app = module.createNestApplication();
     await app.init();
+    await wipeTestDbs(app);
   });
 
-  beforeEach(async () => {
-    await wipeTestDbs();
-    await DatabaseRules.create({
-      app: {
-        '.write': true,
-        '.read': true,
-      },
-    });
+  afterAll(async () => {
+    await app.close();
   });
 
-  it('should be able to get data', async () => {
-    await ClientSpaceModel.create({
-      app: {
-        name: 'App name',
-      },
-    });
-
-    const body = {
-      path: 'app.name',
-    };
-
-    const res = await request(app.getHttpServer())
-      .post('/database-client/get')
-      .send(body);
-
-    expect(res.status).toBe(201);
-    expect(res.body.result).toBe('App name');
-  });
-
-  it('should be able to set data', async () => {
-    const body = {
+  it('should be able to get and set data', async () => {
+    const setBody = {
       path: 'app.name',
       value: 'App name',
     };
     const setRes = await request(app.getHttpServer())
       .post('/database-client/set')
-      .send(body);
+      .send(setBody);
 
     expect(setRes.status).toBe(201);
 
-    const document = await ClientSpaceModel.findOne();
-    expect(document.get(body.path)).toBe('App name');
+    const getBody = {
+      path: 'app.name',
+    };
+
+    const getRes = await request(app.getHttpServer())
+      .post('/database-client/get')
+      .send(getBody);
+
+    expect(getRes.status).toBe(201);
+    expect(getRes.body.result).toBe('App name');
   });
 
-  it('should be able to push data', async () => {
-    const body = {
+  it('should be able to push and get data', async () => {
+    const pushBody = {
       path: 'app.list',
       value: 'List item',
     };
     const pushRes = await request(app.getHttpServer())
       .post('/database-client/push')
-      .send(body);
+      .send(pushBody);
 
     expect(pushRes.status).toBe(201);
+    const id = pushRes.body.id;
+    expect(id).toBeTruthy();
 
-    const document = await ClientSpaceModel.findOne();
+    const getBody = {
+      path: `app.list.${id}`,
+    };
 
-    const ref = document.get(body.path);
-    let retrievedValue;
-    for (let key in ref) {
-      retrievedValue = ref[key];
-    }
+    const getRes = await request(app.getHttpServer())
+      .post('/database-client/get')
+      .send(getBody);
 
-    expect(retrievedValue).toBe('List item');
+    expect(getRes.status).toBe(201);
+    expect(getRes.body.result).toBe('List item');
   });
 });
