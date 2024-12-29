@@ -4,6 +4,7 @@ import { AdminGuard } from 'src/common/utils/admin.guard';
 import { CreateMiddlewareDto } from './dtos/createMiddlewareDto';
 import { UpdateMiddlewareDto } from './dtos/updateMiddlewareDto';
 
+// TODO: api route for getting middleware
 @Controller('server-middleware')
 export class ServerMiddlewareController {
   constructor(
@@ -24,8 +25,12 @@ export class ServerMiddlewareController {
   }
 
   @Post('update')
-  public async updateMiddleware(@Body() updateMiddlewareDto: UpdateMiddlewareDto) {
-    return await this.serverMiddlewareService.updateMiddleware(updateMiddlewareDto)
+  public async updateMiddleware(
+    @Body() updateMiddlewareDto: UpdateMiddlewareDto,
+  ) {
+    return await this.serverMiddlewareService.updateMiddleware(
+      updateMiddlewareDto,
+    );
   }
 
   @Post('delete')
