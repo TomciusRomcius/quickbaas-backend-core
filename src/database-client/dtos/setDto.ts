@@ -1,7 +1,7 @@
 import { IsOptional, IsString } from 'class-validator';
 
 export class SetDto {
-  @IsString()
+  @IsOptional()
   path: string;
   @IsOptional()
   value: unknown;
