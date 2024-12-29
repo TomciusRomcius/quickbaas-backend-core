@@ -67,7 +67,12 @@ export class DatabaseClientOperationService {
   }
 
   public async delete(deleteDto: DeleteDto) {
-    let data = await this.DataModel.findOneAndUpdate({});
+    const promises = [
+      this.DataModel.findOneAndUpdate(),
+      this.cachingService.set(deleteDto.path, null),
+    ];
+
+    const [data] = await Promise.all(promises);
     if (!data) {
       throw new BadRequestException("Object at path doesn't exist");
     }
