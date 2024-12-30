@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -31,13 +32,17 @@ export class AuthService {
 
   async signUpWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const passwordHash = await hash(authWithPasswordDto.password);
-    const user = new User({
-      email: authWithPasswordDto.email,
-      password: passwordHash,
-    });
-    user.save();
+    try {
+      const user = await User.create({
+        email: authWithPasswordDto.email,
+        password: passwordHash,
+      });
+    } catch {
+      throw new BadRequestException('User already exists');
+    }
+
     return this.jwtService.sign({
-      email: user.email,
+      email: authWithPasswordDto.email,
     });
   }
 }
