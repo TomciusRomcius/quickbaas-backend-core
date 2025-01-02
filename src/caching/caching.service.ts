@@ -12,9 +12,16 @@ export class CachingService {
     await this.redisClient.connect();
   }
   async set(key: string, value: any) {
+    if (!key) {
+      return null;
+    }
     this.redisClient.set(key, JSON.stringify(value));
   }
   async get(key: string) {
+    // TODO: find a better caching way
+    if (!key) {
+      return null;
+    }
     const retrieved = await this.redisClient.get(key);
     let result;
     try {
