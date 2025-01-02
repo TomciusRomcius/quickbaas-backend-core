@@ -13,7 +13,9 @@ export class AuthController {
     @Body() authWithPasswordDto: AuthWithPasswordDto,
   ) {
     const jwt = await this.authService.signInWithPassword(authWithPasswordDto);
-    res.cookie('user', jwt);
+    res.cookie('user', jwt, {
+      expires: new Date(Date.now() + 900000),
+    });
     res.send();
   }
 

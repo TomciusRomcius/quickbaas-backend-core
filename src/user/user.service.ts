@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import User from 'src/common/models/userModel';
-import { JwtService } from 'src/jwt/jwt.service';
+import JWT from 'src/common/utils/jwt';
 
 @Injectable()
 export class UserService {
-  constructor(private jwtService: JwtService) {}
-  // Returns a JWT token
   async create(createUserDto: CreateUserDto): Promise<string> {
     const shouldAddPassword =
       createUserDto.password && createUserDto.password.length >= 8;
@@ -17,7 +15,7 @@ export class UserService {
     });
     await user.save();
 
-    const jwtToken = this.jwtService.sign({
+    const jwtToken = JWT.sign({
       email: createUserDto.email,
     });
     return jwtToken;

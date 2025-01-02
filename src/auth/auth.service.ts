@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthWithPasswordDto } from './dto/authWithPasswordDto';
-import { JwtService } from 'src/jwt/jwt.service';
 import User from 'src/common/models/userModel';
 import { comparePasswords, hash } from 'src/common/utils/crypto';
 import JWT from 'src/common/utils/jwt';
