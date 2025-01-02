@@ -3,10 +3,11 @@ services:
     extends:
       service: backend
       file: docker-compose.yml
-    environment:
-      - DATABASE_URLS=mongodb://root:rootpassword@mongo-db:27017/test?authSource=admin
-      - AUTH_KEY=test
-      - ADMIN_KEY=secret
+    build:
+      args:
+        - DATABASE_URLS=mongodb://root:rootpassword@mongo-db:27017/test?authSource=admin
+        - AUTH_KEY=test
+        - ADMIN_KEY=secret
     command: ['pnpm', 'run', 'test', '&&', 'pnpm', 'run', 'test']
 
   mongo-db:
