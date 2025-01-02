@@ -1,17 +1,17 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthWithPasswordDto } from './dto/authWithPasswordDto';
-import { JwtService } from 'src/jwt/jwt.service';
 import User from 'src/common/models/userModel';
 import { comparePasswords, hash } from 'src/common/utils/crypto';
+import JWT from 'src/common/utils/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
   async signInWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const user = await User.findOne({ email: authWithPasswordDto.email });
     if (!user) {
@@ -22,7 +22,7 @@ export class AuthService {
 
     // TODO: add expiry date
     if (await comparePasswords(authWithPasswordDto.password, user.password)) {
-      return this.jwtService.sign({
+      return JWT.sign({
         email: user.email,
       });
     } else {
@@ -32,17 +32,19 @@ export class AuthService {
 
   async signUpWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const passwordHash = await hash(authWithPasswordDto.password);
+    let jwt;
     try {
       const user = await User.create({
         email: authWithPasswordDto.email,
         password: passwordHash,
       });
-    } catch {
-      throw new BadRequestException('User already exists');
+      jwt = JWT.sign({
+        email: user.email,
+      });
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to sign up');
     }
 
-    return this.jwtService.sign({
-      email: authWithPasswordDto.email,
-    });
+    return jwt;
   }
 }

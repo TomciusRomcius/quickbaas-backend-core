@@ -3,6 +3,7 @@ import { SetDatabaseRulesDto } from './dtos/setDatabaseRulesDto';
 import DatabaseRules from 'src/common/models/database-rules-model';
 import SandboxedFunction from 'src/common/utils/sandboxedFunction';
 import { Request } from 'express';
+import JWT from 'src/common/utils/jwt';
 
 class DatabasePath {
   private readonly parts: string[] = [];
@@ -77,9 +78,15 @@ export class DatabaseRulesService {
       return false;
     }
 
+    let userCookie;
+    if (req.cookies?.user) {
+      userCookie = JWT.verify(req.cookies.user);
+    }
+
     let context = {
       fnResult: false,
       req: req,
+      user: userCookie,
       value: value,
     };
 
