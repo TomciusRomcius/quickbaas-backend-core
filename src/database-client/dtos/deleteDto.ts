@@ -1,6 +1,6 @@
-import { IsString } from "class-validator";
+import { IsOptional } from 'class-validator';
 
 export class DeleteDto {
-  @IsString()
+  @IsOptional()
   path: string;
 }
