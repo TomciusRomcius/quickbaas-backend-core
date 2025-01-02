@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -31,13 +33,19 @@ export class AuthService {
 
   async signUpWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const passwordHash = await hash(authWithPasswordDto.password);
-    const user = new User({
-      email: authWithPasswordDto.email,
-      password: passwordHash,
-    });
-    user.save();
-    return this.jwtService.sign({
-      email: user.email,
-    });
+    let jwt;
+    try {
+      const user = await User.create({
+        email: authWithPasswordDto.email,
+        password: passwordHash,
+      });
+      jwt = this.jwtService.sign({
+        email: user.email,
+      });
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to sign up');
+    }
+
+    return jwt;
   }
 }
