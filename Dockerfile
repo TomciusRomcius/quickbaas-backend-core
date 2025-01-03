@@ -1,7 +1,5 @@
-# Base image
 FROM node:20-alpine
 
-# Set working directory
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
@@ -22,5 +20,4 @@ ENV ADMIN_KEY=${ADMIN_KEY}
 
 EXPOSE 3000
 
-# Start the application in production mode
-CMD ["sh", "-c", "pnpm run build && pnpm run start:prod"]
+CMD ["pnpm", "run", "build", "&&", "pnpm", "run", "start:prod"]
