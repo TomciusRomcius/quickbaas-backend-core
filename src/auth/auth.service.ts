@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -40,6 +39,7 @@ export class AuthService {
       });
       jwt = JWT.sign({
         email: user.email,
+        id: user.id,
       });
     } catch (err) {
       throw new InternalServerErrorException('Failed to sign up');
