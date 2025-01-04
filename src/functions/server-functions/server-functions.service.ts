@@ -52,11 +52,15 @@ export class ServerFunctionsService {
           databaseClientOperationService: this.databaseClientOperationService,
         });
 
-        const dbFn = await new ServerFunctionModel({
-          name: fnDto.name,
-          code: fnDto.code,
-        });
-        dbFn.save();
+        await ServerFunctionModel.findOneAndUpdate(
+          {
+            name: fnDto.name,
+          },
+          {
+            code: fnDto.code,
+          },
+          { upsert: true },
+        );
 
         this.serverFunctions.set(fn.name, fn);
       };
