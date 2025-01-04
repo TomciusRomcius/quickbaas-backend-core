@@ -31,6 +31,9 @@ export class ServerFunctionsController {
   @Post('run')
   public runServerFunction(@Req() req: Request, @Res() res: Response) {
     this.serverFunctionsService.runServerFunction(req, res);
+    if (!res.headersSent) {
+      res.status(201).send();
+    }
   }
 
   @Post('delete')
