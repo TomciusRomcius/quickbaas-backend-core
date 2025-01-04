@@ -4,8 +4,7 @@ import ServerMiddlewareModel from 'src/common/models/serverMiddlewareModel';
 import { MiddlewareFunctionWrapper } from '../utils/middleware-function-wrapper';
 import ServerFunction from '../utils/server-function';
 import { DatabaseClientOperationService } from 'src/database-client-operation/database-client-operation.service';
-import { UpdateMiddlewareDto } from './dtos/updateMiddlewareDto';
-import { DeleteMiddlewareDto } from './dtos/deleteMiddlewareDto';
+import { CreateMiddlewareDto } from './dtos/create-middleware-dto';
 
 @Injectable()
 export class ServerMiddlewareService {

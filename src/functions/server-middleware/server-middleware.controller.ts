@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ServerMiddlewareService } from './server-middleware.service';
 import { AdminGuard } from 'src/common/utils/admin.guard';
-import { CreateMiddlewareDto } from './dtos/createMiddlewareDto';
-import { UpdateMiddlewareDto } from './dtos/updateMiddlewareDto';
+import { CreateMiddlewareDto } from './dtos/create-middleware-dto';
 
 // TODO: api route for getting middleware
 @Controller('server-middleware')
