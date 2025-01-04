@@ -1,6 +1,13 @@
-import { IsDefined, IsNotEmpty, IsString } from "class-validator";
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsDefined,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
-export class CreateMiddlewareDto {
+export class Middleware {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -11,7 +18,13 @@ export class CreateMiddlewareDto {
 
   @IsDefined()
   runsOn: {
-    database: boolean,
-    auth: boolean,
+    database: boolean;
+    auth: boolean;
   };
+}
+
+export class CreateMiddlewareDto {
+  @IsArray()
+  @IsNotEmpty()
+  middlewares: Middleware[];
 }
