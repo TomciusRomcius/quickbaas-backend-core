@@ -87,8 +87,9 @@ export class ServerFunctionsService {
         'Server function with the specified name does not exist',
       );
     }
-
-    const result = fn.run(req, res);
+    fn.run(req, res, {
+      params: req.body.params,
+    });
   }
 
   public deleteServerFunction(
