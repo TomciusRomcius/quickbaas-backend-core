@@ -65,7 +65,7 @@ export class ServerFunctionsService {
     });
 
     try {
-      Promise.all(promises);
+      await Promise.all(promises);
     } catch (err) {
       throw new InternalServerErrorException();
     }
