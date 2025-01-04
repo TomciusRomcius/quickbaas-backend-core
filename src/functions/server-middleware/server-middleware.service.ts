@@ -13,19 +13,8 @@ export class ServerMiddlewareService {
   constructor(private databaseClientService: DatabaseClientOperationService) {}
 
   public async getAllMiddleware() {
-    const dbMiddlewares = await ServerMiddlewareModel.find();
-    this.middlewares = [];
-    dbMiddlewares.forEach((middleware) => {
-      const context = {
-        databaseClientService: this.databaseClientService,
-      };
-      this.middlewares.push(
-        new MiddlewareFunctionWrapper(
-          new ServerFunction(middleware.name, middleware.code, context),
-          middleware.runsOn,
-        ),
-      );
-    });
+    const dbMiddlewares = await ServerMiddlewareModel.find({}, { name: true });
+    return dbMiddlewares.map((middleware) => middleware.name);
   }
 
   public async createMiddleware(createMiddlewareDto: CreateMiddlewareDto) {

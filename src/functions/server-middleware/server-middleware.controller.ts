@@ -10,9 +10,11 @@ export class ServerMiddlewareController {
     private readonly serverMiddlewareService: ServerMiddlewareService,
   ) {}
 
-  @Get()
+  @Post('get')
   @UseGuards(AdminGuard)
-  public getAllMiddleware() {}
+  public async getAllMiddleware() {
+    return await this.serverMiddlewareService.getAllMiddleware();
+  }
 
   @Post('create')
   public async createMiddleware(
