@@ -20,20 +20,6 @@ export class ServerMiddlewareController {
   public async createMiddleware(
     @Body() createMiddlewareDto: CreateMiddlewareDto,
   ) {
-    return await this.serverMiddlewareService.createMiddleware(
-      createMiddlewareDto,
-    );
+    await this.serverMiddlewareService.createMiddleware(createMiddlewareDto);
   }
-
-  @Post('update')
-  public async updateMiddleware(
-    @Body() updateMiddlewareDto: UpdateMiddlewareDto,
-  ) {
-    return await this.serverMiddlewareService.updateMiddleware(
-      updateMiddlewareDto,
-    );
-  }
-
-  @Post('delete')
-  public deleteMiddleware() {}
 }
