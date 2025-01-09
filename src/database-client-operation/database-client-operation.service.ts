@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
-import { CachingService } from 'src/caching/caching.service';
 import { navigateStringPath } from 'src/common/utils/navigateStringPath';
 import { DeleteDto } from 'src/database-client/dtos/deleteDto';
 import { SetDto } from 'src/database-client/dtos/setDto';
@@ -8,8 +7,6 @@ import { SetDto } from 'src/database-client/dtos/setDto';
 @Injectable()
 export class DatabaseClientOperationService {
   private DataModel!: Model<any>;
-
-  constructor(private cachingService: CachingService) { }
 
   public onModuleInit() {
     const schema = new mongoose.Schema({}, { strict: false });
@@ -24,41 +21,22 @@ export class DatabaseClientOperationService {
   }
 
   public async get(getDto: DeleteDto) {
-    const cachedData = await this.cachingService.get(getDto.path);
+    const result = await this.DataModel.findOne(
+      {},
+      {
+        [getDto.path]: 1,
+      },
+    );
 
-    let data;
-
-    if (cachedData !== null) {
-      data = cachedData;
-    } else if (!getDto.path) {
-      data = await this.DataModel.findOne();
-      await this.cachingService.set(getDto.path, data);
-    } else {
-      data = await this.DataModel.findOne(
-        {},
-        {
-          [getDto.path]: 1,
-        },
-      );
-      await this.cachingService.set(getDto.path, data);
-    }
-
-    return data;
+    return navigateStringPath(result, getDto.path);
   }
 
   public async set(setDto: SetDto) {
-    let addToDbFn;
     if (setDto.path) {
-      addToDbFn = this.DataModel.create({ [setDto.path]: setDto.value });
+      await this.DataModel.create({ [setDto.path]: setDto.value });
     } else {
-      addToDbFn = this.DataModel.create(setDto.value);
+      await this.DataModel.create(setDto.value);
     }
-    const promises = [
-      this.cachingService.set(setDto.path, setDto.value),
-      addToDbFn,
-    ];
-
-    await Promise.all(promises);
   }
 
   public async push(setDto: SetDto) {
@@ -71,8 +49,6 @@ export class DatabaseClientOperationService {
     );
 
     const db = await this.DataModel.findOne({});
-    console.log(path);
-    console.log(db);
     return newId;
   }
 }
