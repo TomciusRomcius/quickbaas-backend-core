@@ -28,9 +28,4 @@ export class DatabaseClientController {
     const id = await this.databaseClientOperationService.push(setDto);
     return { id: id };
   }
-
-  @Delete('delete')
-  public async delete(@Body() deleteDto: DeleteDto) {
-    await this.databaseClientOperationService.delete(deleteDto);
-  }
 }
