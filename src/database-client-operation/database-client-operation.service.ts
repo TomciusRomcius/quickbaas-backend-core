@@ -64,32 +64,15 @@ export class DatabaseClientOperationService {
   public async push(setDto: SetDto) {
     const newId = new mongoose.Types.ObjectId()._id.toString();
     const path = `${setDto.path}.${newId}`;
+    await this.DataModel.updateOne(
+      {},
+      { $set: { [path]: setDto.value } },
+      { upsert: true },
+    );
 
-    const promises = [
-      this.DataModel.create({
-        [path]: setDto.value,
-      }),
-      this.cachingService.set(path, setDto.value),
-    ];
-
-    await Promise.all(promises);
+    const db = await this.DataModel.findOne({});
+    console.log(path);
+    console.log(db);
     return newId;
   }
-
-  public async delete(deleteDto: DeleteDto) {
-    const promises = [
-      this.DataModel.findOneAndUpdate(),
-      this.cachingService.set(deleteDto.path, null),
-    ];
-
-    const [data] = await Promise.all(promises);
-    if (!data) {
-      throw new BadRequestException("Object at path doesn't exist");
-    }
-
-    data.set(deleteDto.path, undefined);
-    data.save();
-  }
-
-  public async pop() {}
 }
