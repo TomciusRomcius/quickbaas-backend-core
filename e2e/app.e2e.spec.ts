@@ -13,6 +13,7 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    process.env.API_KEY = 'api-key';
   });
 
   afterAll(async () => {
@@ -22,7 +23,15 @@ describe('AppController (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
+      .send({
+        apiKey: process.env.API_KEY,
+      })
       .expect(200)
       .expect('Hello World!');
+  });
+
+  it('should give an unauthorized http code if the api key was not provided but it was defined in the .env file', async () => {
+    const res = await request(app.getHttpServer()).get('/');
+    expect(res.status).toBe(401);
   });
 });
