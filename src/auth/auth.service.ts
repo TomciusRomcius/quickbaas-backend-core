@@ -11,6 +11,8 @@ import JWT from 'src/common/utils/jwt';
 
 @Injectable()
 export class AuthService {
+  private readonly tokenDurationMs: number = 150000;
+
   async signInWithPassword(authWithPasswordDto: AuthWithPasswordDto) {
     const user = await User.findOne({ email: authWithPasswordDto.email });
     if (!user) {
@@ -23,6 +25,8 @@ export class AuthService {
     if (await comparePasswords(authWithPasswordDto.password, user.password)) {
       return JWT.sign({
         email: user.email,
+        id: user.id,
+        exp: Date.now() + this.tokenDurationMs,
       });
     } else {
       throw new UnauthorizedException('Password is incorrect!');
@@ -40,6 +44,7 @@ export class AuthService {
       jwt = JWT.sign({
         email: user.email,
         id: user.id,
+        exp: Date.now() + this.tokenDurationMs,
       });
     } catch (err) {
       throw new InternalServerErrorException('Failed to sign up');
