@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import ServerMiddlewareModel from 'src/common/models/serverMiddlewareModel';
 import { MiddlewareFunctionWrapper } from '../utils/middleware-function-wrapper';
-import ServerFunction from '../utils/server-function';
-import { DatabaseClientOperationService } from 'src/database-client-operation/database-client-operation.service';
 import { CreateMiddlewareDto } from './dtos/create-middleware-dto';
+import SandboxedFunction from 'src/common/utils/sandboxedFunction';
 
 @Injectable()
 export class ServerMiddlewareService {
@@ -42,10 +41,9 @@ export class ServerMiddlewareService {
 
   public async createMiddleware(createMiddlewareDto: CreateMiddlewareDto) {
     const promises = [];
-    console.log(createMiddlewareDto.middlewares);
     createMiddlewareDto.middlewares.forEach((middleware) => {
       const fn = async () => {
-        await ServerMiddlewareModel.findOneAndUpdate(
+        const res = await ServerMiddlewareModel.findOneAndUpdate(
           {
             name: middleware.name,
           },
@@ -53,7 +51,7 @@ export class ServerMiddlewareService {
             code: middleware.code,
             runsOn: middleware.runsOn,
           },
-          { upsert: true },
+          { upsert: true, new: true },
         );
       };
       promises.push(fn());
