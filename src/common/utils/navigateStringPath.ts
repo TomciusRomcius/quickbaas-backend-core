@@ -1,4 +1,7 @@
 export function navigateStringPath(head: unknown, path: string): unknown {
+  if (!path) {
+    return head;
+  }
   const pathParts = path.split('.');
 
   let ref = head;
