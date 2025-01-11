@@ -36,10 +36,22 @@ export class DatabaseClientOperationService {
   }
 
   public async set(setDto: SetDto) {
+    if (!setDto.path && typeof setDto.value !== 'object') {
+      throw new BadRequestException(
+        'You can only set objects to the root path!',
+      );
+    }
+
     if (setDto.path) {
-      await this.DataModel.create({ [setDto.path]: setDto.value });
+      await this.DataModel.findOneAndUpdate(
+        {},
+        {
+          [setDto.path]: setDto.value,
+        },
+        { upsert: true },
+      );
     } else {
-      await this.DataModel.create(setDto.value);
+      await this.DataModel.findOneAndUpdate({}, setDto.value, { upsert: true });
     }
   }
 
