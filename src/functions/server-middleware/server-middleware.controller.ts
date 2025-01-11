@@ -17,6 +17,7 @@ export class ServerMiddlewareController {
   }
 
   @Post('create')
+  @UseGuards(AdminGuard)
   public async createMiddleware(
     @Body() createMiddlewareDto: CreateMiddlewareDto,
   ) {
