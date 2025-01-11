@@ -21,14 +21,18 @@ export class DatabaseClientOperationService {
   }
 
   public async get(getDto: DeleteDto) {
-    const result = await this.DataModel.findOne(
-      {},
-      {
-        [getDto.path]: 1,
-      },
-    );
+    if (getDto.path) {
+      const result = await this.DataModel.findOne(
+        {},
+        {
+          [getDto.path]: 1,
+        },
+      );
 
-    return navigateStringPath(result, getDto.path);
+      return navigateStringPath(result, getDto.path);
+    } else {
+      return await this.DataModel.findOne();
+    }
   }
 
   public async set(setDto: SetDto) {
