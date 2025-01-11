@@ -26,5 +26,7 @@ export class Middleware {
 export class CreateMiddlewareDto {
   @IsArray()
   @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => Middleware)
   middlewares: Middleware[];
 }
