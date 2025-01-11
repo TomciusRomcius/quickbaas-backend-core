@@ -11,7 +11,7 @@ export class ServerMiddlewareService {
 
   constructor(private databaseClientService: DatabaseClientOperationService) {}
 
-  public async getAllMiddleware() {
+  public async getAllMiddlewareNames() {
     const dbMiddlewares = await ServerMiddlewareModel.find({}, { name: true });
     return dbMiddlewares.map((middleware) => middleware.name);
   }

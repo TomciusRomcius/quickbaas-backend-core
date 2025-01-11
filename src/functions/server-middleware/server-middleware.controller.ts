@@ -13,7 +13,7 @@ export class ServerMiddlewareController {
   @Post('get')
   @UseGuards(AdminGuard)
   public async getAllMiddleware() {
-    return await this.serverMiddlewareService.getAllMiddleware();
+    return await this.serverMiddlewareService.getAllMiddlewareNames();
   }
 
   @Post('create')
