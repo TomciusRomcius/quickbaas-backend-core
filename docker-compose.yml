@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        - DATABASE_URLS=mongodb://root:rootpassword@mongo-db:27017/development?authSource=admin
+        - DATABASE_URLS=mongodb://root:rootpassword@mongo-db:27017
         - AUTH_KEY=test
         - ADMIN_KEY=secret
     volumes:

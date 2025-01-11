@@ -18,7 +18,10 @@ export class DatabaseService {
     const pendingConnections = [];
     if (urls) {
       (urls as string).split(' ').forEach((url) => {
-        const connect = mongoose.connect(url);
+        const connect = mongoose.connect(
+          `${url}/${this.configService.get('NODE_ENV')}?authSource=admin`,
+        );
+
         pendingConnections.push(connect);
       });
     }
@@ -33,7 +36,7 @@ export class DatabaseService {
 
     if (
       !(
-        mongoose.connection.db.databaseName === 'test' ||
+        mongoose.connection.db.databaseName === 'testing' ||
         mongoose.connection.db.databaseName === 'development'
       )
     ) {
